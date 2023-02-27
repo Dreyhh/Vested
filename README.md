@@ -1,6 +1,6 @@
-# VestedTransfer
+# Vested
 
-`VestedTransfer` is a script that enables you to make multiple calls to the `VestedTransfer` extrinsic using Polkadot API.
+`Vested` is a script that enables you to make multiple calls to the `VestedTransfer` extrinsic using Polkadot API.
 
 ## How to use
 
@@ -21,4 +21,11 @@ Replace the placeholder values with your actual values.
 5. Run the script by typing `node script.js` in your terminal.
 6. Once the process has completed, you can find the records saved in the `output.txt` file.
 
+##Considerations
+Make sure to follow the .csv format:
+first column: recipient address
+second column: locked
+third column: perBlock
+fourth colum: startingBlock
 
+Before actual transaction, make a test with small quantities.
