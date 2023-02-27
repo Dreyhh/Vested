@@ -29,3 +29,6 @@ third column: perBlock
 fourth colum: startingBlock
 
 Before actual transaction, make a test with small quantities.
+
+Video:
+https://drive.google.com/file/d/19vNBywAsojZSh1qjT_u7A8vnRWJ-J9gm/view
