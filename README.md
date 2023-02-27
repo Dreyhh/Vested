@@ -21,7 +21,8 @@ Replace the placeholder values with your actual values.
 5. Run the script by typing `node script.js` in your terminal.
 6. Once the process has completed, you can find the records saved in the `output.txt` file.
 
-##Considerations
+## Considerations
+
 Make sure to follow the .csv format:
 first column: recipient address
 second column: locked
