@@ -17,6 +17,8 @@ To use this script, follow the steps below:
 Replace the placeholder values with your actual values.
 
 3. Modify the `vested.csv` file with the relevant data.
-4. Run the script by typing `node script.js` in your terminal.
-5. Once the process has completed, you can find the records saved in the `output.txt` file.
+4. You can modify the frequency at which each call is made by modifying the `frequency` variable in `script.js` (in milliseconds).
+5. Run the script by typing `node script.js` in your terminal.
+6. Once the process has completed, you can find the records saved in the `output.txt` file.
+
 
