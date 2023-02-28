@@ -1,7 +1,6 @@
 import parseCsvFile from './parseCsvFile.js';
 import processCsvRow from './processCsvRow.js';
 
-let counts = [0,0];
 // Define an async function to process the next row in the CSV file
 const MakeAllTransactions = async (filename, api, frequency, currentRowIndex) => {
     try {
@@ -15,12 +14,13 @@ const MakeAllTransactions = async (filename, api, frequency, currentRowIndex) =>
       const rowsLen = MakeAllTransactions.rows.length;
       if (row) {
         currentRowIndex++;
-        counts = await processCsvRow(row, currentRowIndex, api, rowsLen);
+        await processCsvRow(row, currentRowIndex, api, rowsLen);
       } 
     } catch (error) {
       console.error(`Error processing CSV row: ${error}`);
     }
-  
+    
+    // Call this function again after the specified frequency
     setTimeout(() => MakeAllTransactions(filename, api, frequency, currentRowIndex), frequency);
   };
 

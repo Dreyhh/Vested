@@ -24,14 +24,11 @@ const processCsvRow = async (row, currentRowIndex, api, rowsLen) => {
     const perBlock = new BN(arg3);
     const startingBlock = new BN (arg4);
 
-    // Get the nonce for the sender's account
-    const nonce = await api.query.system.account(senderPublicKey)
     const vestingInfo = await api.createType('VestingInfo', { locked: locked, perBlock: perBlock, startingBlock: startingBlock});
     // Create a new transfer extrinsic using the vestedTransfer method from the pallet_vesting module
     const tx = await api.tx.vesting.vestedTransfer(recipientAddress, vestingInfo);
     
     const unsub = await tx.signAndSend(senderPair, { nonce: -1 }, async ({ events = [], status }) => {
-      //console.log(`Current status is ${status.type}`);
       if (status.isFinalized) {
         const finalizedStatus = await status.asFinalized;
         

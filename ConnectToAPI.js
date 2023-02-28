@@ -14,7 +14,7 @@ export async function connect() {
     await api.isReady;
     console.log('\x1b[32m%s\x1b[0m','Connected to Polkadot node successfully!');
       api.on('disconnected', async () => {
-        console.log(`API disconnected at row ${currentRowIndex}, attempting to reconnect...`);
+        console.log(`API disconnected, attempting to reconnect...`);
     
         // Wait for 5 seconds before attempting to reconnect
         await new Promise(resolve => setTimeout(resolve, 5000));
