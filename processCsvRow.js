@@ -16,14 +16,26 @@ const processCsvRow = async (row, currentRowIndex, api, rowsLen) => {
     // Initialize the keyring with the sender's account
     const keyring = new Keyring({ type: 'sr25519' });
     const senderPair = keyring.addFromUri(senderPhrase);
-   
-    
+
+
     //Parse the row data  
     const recipientAddress = arg1;
     const locked = new BN(arg2);
     const perBlock = new BN(arg3);
-    const startingBlock = new BN (arg4);
+    const startingBlock = new BN(arg4);
 
+    // Get the vesting information for the account
+    const vesting = await api.query.vesting.vesting(recipientAddress);
+    const vested = vesting.toJSON();
+    if (vested){
+    // Check if the account has an active vesting schedule
+      console.log(`Skipping ${recipientAddress}, he already has an active vesting schedule`);
+      console.log(`Locked: ${vested[0]['locked']}`);
+      failCount++;
+      fs.appendFileSync('output.txt', `User ${recipientAddress} was skipped, he already has an active vesting schedule\n`); 
+      printEndMessage(rowsLen);
+      return;
+    }
     const vestingInfo = await api.createType('VestingInfo', { locked: locked, perBlock: perBlock, startingBlock: startingBlock});
     // Create a new transfer extrinsic using the vestedTransfer method from the pallet_vesting module
     const tx = await api.tx.vesting.vestedTransfer(recipientAddress, vestingInfo);
@@ -50,16 +62,7 @@ const processCsvRow = async (row, currentRowIndex, api, rowsLen) => {
           fs.appendFileSync('output.txt', `Row: ${currentRowIndex},recipientAddress: ${recipientAddress},Transaction Failed at: ${finalizedStatus}\n`);
           failCount++;
         }
-        if (successCount + failCount >= rowsLen){
-            const boxWidth = 40;
-            console.log('+' + '-'.repeat(boxWidth - 2) + '+');
-            console.log('\x1b[33m%s\x1b[0m',`Total transactions sent: ${successCount + failCount}`);
-            console.log('\x1b[32m%s\x1b[0m',`Successful transactions: ${successCount}`);
-            console.log('\x1b[31m%s\x1b[0m',`Failed transactions: ${failCount}`);
-            console.log('\x1b[33m%s\x1b[0m',`Records saved to output.txt`);
-            console.log('+' + '-'.repeat(boxWidth - 2) + '+');
-            process.exit();
-            }
+        printEndMessage(rowsLen);
         unsub();
       }
     
@@ -71,5 +74,18 @@ const processCsvRow = async (row, currentRowIndex, api, rowsLen) => {
 
      
     };
+
+  function printEndMessage(rowsLen) {
+    if (successCount + failCount >= rowsLen){
+      const boxWidth = 40;
+      console.log('+' + '-'.repeat(boxWidth - 2) + '+');
+      console.log('\x1b[33m%s\x1b[0m',`Total transactions sent: ${successCount + failCount}`);
+      console.log('\x1b[32m%s\x1b[0m',`Successful transactions: ${successCount}`);
+      console.log('\x1b[31m%s\x1b[0m',`Failed transactions: ${failCount}`);
+      console.log('\x1b[33m%s\x1b[0m',`Records saved to output.txt`);
+      console.log('+' + '-'.repeat(boxWidth - 2) + '+');
+      process.exit(0);
+      }
+  }
 
 export default processCsvRow;
