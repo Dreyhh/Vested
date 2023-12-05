@@ -22,7 +22,7 @@ const processCsvRow = async (row, currentRowIndex, api, rowsLen) => {
     const recipientAddress = arg1;
     const locked =  convertToHASH(arg2, currentRowIndex);
     const perBlock = convertToHASH(arg3, currentRowIndex);
-    const startingBlock = new BN(arg4);
+    const startingBlock = Math.floor(parseInt(arg4));
 
     // Get the vesting information for the account
     const vesting = await api.query.vesting.vesting(recipientAddress);
@@ -100,23 +100,23 @@ const processCsvRow = async (row, currentRowIndex, api, rowsLen) => {
       throw new Error(`At Row #${idx}: Vesting amount is not a number.\nWaiting for other transactions to complete...`);
     }
     
-    const precision = 1e12; // Use 12 decimal places of precision
+    const precision = 1e6; // Use 6 decimal places of precision
     const bn = new BN(10).pow(new BN(18));
     let intNum;
   
     // Check if the input is a float
     if (!Number.isInteger(arg)) {
-      intNum = Math.round(arg * precision);
+      intNum = new BN(arg * precision);
     } else {
       // Convert integer to float by dividing by the precision
       intNum = arg / precision;
     }
   
     // Create a BN from the integer and multiply with the given BN
-    const result = bn.mul(new BN(intNum));
+    const result =  new BN (bn.mul(new BN(intNum)));
   
     // Divide the result by the precision to get the final float value
-    return result.divRound(new BN(precision));
+    return new BN(result.divRound(new BN(precision)));
   }
 
 export default processCsvRow;
